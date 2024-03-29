@@ -27,6 +27,7 @@
 #include "nvs.h"
 #include "nvs_flash.h"
 #include "ota_drv.h"
+#include "prod_http_app.h"
 #include "wifidrv.h"
 
 /* Private macros ------------------------------------------------------------*/
@@ -117,8 +118,6 @@ static void initialize_console( void )
 
 /* Public functions ---------------------------------------------------------*/
 
-extern void MongooseHTTPApp_Init( void );
-
 void ProdApp_Start( void )
 {
   initialize_nvs();
@@ -133,7 +132,7 @@ void ProdApp_Start( void )
     wifiDrvConnect();
   }
   mDNS_Start();
-  MongooseHTTPApp_Init();
+  ProdHTTPApp_Init();
 
   initialize_console();
 
