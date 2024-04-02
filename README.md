@@ -24,6 +24,7 @@ idf.py flash -p COM8
 Commands command line
 ======================
 Command line start on serial interface. You can connect by PuTTY or another program.
+
 Commands:
 ----------------------
 1. `get_mac` - get device MAC address. Example:
@@ -32,14 +33,10 @@ prod> get_mac
 94E6860F9BA0 
 ```
 2. `join` - connect to WiFi
-join  [--timeout=<t>] <ssid> [<pass>]                                           
-  Join WiFi AP as a station                                                     
-  --timeout=<t>  Connection timeout, ms                                         
-        <ssid>  SSID of AP                                                      
-        <pass>  PSK of AP 
+`join ssid password`
 Example:
 ```
-prod> join ZTE_E25CC6 R2B2FEZJPG                                                
+prod> join ZTE_E25CC6 PASSWORD                                                
 I (718120) connect: Connecting to 'ZTE_E25CC6'                                  
 I (723240) connect: Connected 
 ```
@@ -56,10 +53,12 @@ HTTP API
 1. POST /api/sn - set serial number. In body of message send serial number
 2. GET /api/sn - get serial number. In body of response message sent serial number
 3. POST /api/ota - set url where device tried download application
+
 Response codes:
 1. 200 - OK
 2. 400 - FAIL
 3. 500 - Internal server error
+
 Example of post message:
 ```
 import requests
