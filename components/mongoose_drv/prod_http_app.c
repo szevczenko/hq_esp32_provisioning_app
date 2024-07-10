@@ -9,7 +9,11 @@
 
 /* Includes ------------------------------------------------------------------*/
 
+#include "app_config.h"
 #include "dev_config.h"
+#include "esp_system.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/timers.h"
 #include "mongoose.h"
 #include "ota_drv.h"
 
@@ -21,6 +25,20 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* Private functions ---------------------------------------------------------*/
+
+static const char* ota_state_name[] =
+  {
+    [OTA_DRIVER_STATE_IDLE] = "idle",
+    [OTA_DRIVER_STATE_DOWNLOAD] = "download",
+    [OTA_DRIVER_STATE_ERROR] = "error",
+    [OTA_DRIVER_STATE_DONWLOAD_FINISHED] = "finish",
+};
+
+static void _restart_timer_cb( TimerHandle_t xTimer )
+{
+  printf( "Restart callback\n\r" );
+  esp_restart();
+}
 
 static void fn( struct mg_connection* c, int ev, void* ev_data )
 {
@@ -67,6 +85,25 @@ static void fn( struct mg_connection* c, int ev, void* ev_data )
       {
         mg_http_reply( c, 400, "", "FAIL\n" );
       }
+    }
+    else if ( mg_http_match_uri( hm, "/api/ota/state" ) )
+    {
+      if ( mg_vcasecmp( &hm->method, "GET" ) == 0 )
+      {
+        size_t percentage = OTA_GetDownloadPercentage();
+        const char* state = ota_state_name[OTA_GetState()];
+        mg_http_reply( c, 200, "", "{\"percentage\":%d, \"state\":\"%s\"}\n", percentage, state );
+      }
+      else
+      {
+        mg_http_reply( c, 400, "", "FAIL\n" );
+      }
+    }
+    else if ( mg_http_match_uri( hm, "/api/restart" ) )
+    {
+      mg_http_reply( c, 200, "", "restart after 5 seconds" );
+      TimerHandle_t timer = xTimerCreate( "Timer", MS2ST( 5000 ), pdTRUE, (void*) 0, _restart_timer_cb );
+      xTimerStart( timer, 0 );
     }
     else
     {

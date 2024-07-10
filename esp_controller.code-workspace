@@ -162,7 +162,8 @@
             "keepalive.h": "c",
             "menu_drv.h": "c",
             "mongoose_drv.h": "c",
-            "prod_app.h": "c"
+            "prod_app.h": "c",
+            "dev_config.h": "c"
         },
         "cSpell.words": [
             "centi",

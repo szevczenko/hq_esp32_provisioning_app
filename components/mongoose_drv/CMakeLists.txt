@@ -1,6 +1,6 @@
 idf_component_register(SRCS "prod_http_app.c" "mongoose/mongoose.c"
                     INCLUDE_DIRS "." "mongoose" "mongoose/src"  
-                    REQUIRES main nvs_flash oled esp_timer)
+                    REQUIRES main nvs_flash esp_timer)
 
 component_compile_options(-DMG_ENABLE_LINES)
 component_compile_options(-DMG_ENABLE_PACKED_FS)
